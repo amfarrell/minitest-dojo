@@ -1,10 +1,12 @@
 require 'minitest/autorun'
 
 class Concordance
-  def ask(line)
+  def ask(lines)
     words = Hash.new
-    line.each_with_index do |word, i|
+    lines.each_with_index do |line, i|
+      line.split(' ').each do |word|
         words[word] = words.fetch(word, []) + [i+1]
+      end
     end
     words
   end
@@ -16,10 +18,22 @@ class ConcordanceTest < Minitest::Test
     assert_equal({"Whatever" => [1]}, concordance.ask(["Whatever"]))
   end
 
-  def test_lists_all_the_lines_for_a_single_word
+  def test_lists_all_the_lines_for_a_single_word_repeated
     concordance = Concordance.new
     lines = ["Whatever", "Whatever"]
     assert_equal({"Whatever" => [1, 2]}, concordance.ask(lines))
+  end
+
+  def test_lists_lines_for_two_words
+    concordance = Concordance.new
+    lines = ["Whatever", "oblate"]
+    assert_equal({"Whatever" => [1], "oblate" => [2]}, concordance.ask(lines))
+  end
+
+  def test_lists_lines_for_two_words_on_multiple_lines
+    concordance = Concordance.new
+    lines = ["Whatever", "oblate Whatever"]
+    assert_equal({"Whatever" => [1, 2], "oblate" => [2]}, concordance.ask(lines))
   end
 end
 
