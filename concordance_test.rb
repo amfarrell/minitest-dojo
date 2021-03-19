@@ -4,11 +4,7 @@ class Concordance
   def ask(line)
     words = Hash.new
     line.each_with_index do |word, i|
-      if words.include?(word)
-        words[word].push(i+1)
-      else
-        words[word] = [i+1]
-      end
+        words[word] = words.fetch(word, []) + [i+1]
     end
     words
   end
